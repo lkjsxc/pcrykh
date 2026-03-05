@@ -1,5 +1,5 @@
 {
-  "spec_version": "4.3",
+  "spec_version": "5.0",
   "commands": {
     "root": "pcrykh"
   },
@@ -15,7 +15,23 @@
       "prefix": "[Pcrykh] "
     },
     "action_bar": {
-      "progress_enabled": true
+      "progress_enabled": true,
+      "priority": {
+        "enabled": true,
+        "display_interval_ticks": 20,
+        "cooldown_ticks": 10,
+        "preempt_on_higher_priority": true
+      }
+    },
+    "dialogue": {
+      "timeout_seconds": 15,
+      "freeze_villager": true
+    },
+    "persistence": {
+      "player_state": {
+        "enabled": true,
+        "directory": "data/players"
+      }
     }
   },
   "facts_sources": [
@@ -26,5 +42,11 @@
   ],
   "achievement_sources": [
     "achievements/entries"
+  ],
+  "npc_sources": [
+    "npcs"
+  ],
+  "quest_sources": [
+    "quests"
   ]
 }

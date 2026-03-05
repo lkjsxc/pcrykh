@@ -7,16 +7,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.UUID;
 
 public class AchievementProgressService {
+    private final Plugin plugin;
     private final AchievementCatalog catalog;
     private final RuntimeConfig config;
 
@@ -31,10 +35,16 @@ public class AchievementProgressService {
     private final Map<UUID, Map<String, Integer>> progress = new HashMap<>();
     private final Map<UUID, Set<String>> unlocked = new HashMap<>();
 
-    public AchievementProgressService(AchievementCatalog catalog, RuntimeConfig config) {
+    private final Map<UUID, PriorityQueue<ProgressUpdate>> actionBarQueues = new HashMap<>();
+    private final Map<UUID, Map<String, ProgressUpdate>> queuedByAchievement = new HashMap<>();
+    private final Map<UUID, Long> lastActionBarAt = new HashMap<>();
+
+    public AchievementProgressService(Plugin plugin, AchievementCatalog catalog, RuntimeConfig config) {
+        this.plugin = plugin;
         this.catalog = catalog;
         this.config = config;
         indexAchievements();
+        startActionBarDispatcher();
     }
 
     public int getProgress(Player player, AchievementDefinition achievement) {
@@ -117,8 +127,8 @@ public class AchievementProgressService {
             return;
         }
         UUID playerId = player.getUniqueId();
-        Map<String, Integer> playerProgress = progress.computeIfAbsent(playerId, id -> new HashMap<>());
-        Set<String> playerUnlocked = unlocked.computeIfAbsent(playerId, id -> new HashSet<>());
+        Map<String, Integer> playerProgress = progress.computeIfAbsent(playerId, ignored -> new HashMap<>());
+        Set<String> playerUnlocked = unlocked.computeIfAbsent(playerId, ignored -> new HashSet<>());
 
         for (AchievementDefinition achievement : achievements) {
             CriteriaSpec spec = criteriaById.get(achievement.id());
@@ -137,7 +147,7 @@ public class AchievementProgressService {
                 broadcastUnlock(player, achievement);
             }
 
-            notifyProgress(player, achievement, next, spec.count());
+            notifyProgress(player, achievement, next, spec.count(), increment);
         }
     }
 
@@ -149,13 +159,34 @@ public class AchievementProgressService {
         Bukkit.getServer().broadcast(Component.text(message));
     }
 
-    private void notifyProgress(Player player, AchievementDefinition achievement, int current, int target) {
+    private void notifyProgress(Player player, AchievementDefinition achievement, int current, int target, int increment) {
         if (!config.actionBar().progressEnabled()) {
             return;
         }
         if (target <= 0) {
             return;
         }
+
+        if (!config.actionBar().priority().enabled()) {
+            sendActionBar(player, achievement, current, target);
+            return;
+        }
+
+        ProgressUpdate update = new ProgressUpdate(achievement, current, target, increment);
+        UUID playerId = player.getUniqueId();
+        Map<String, ProgressUpdate> latest = queuedByAchievement.computeIfAbsent(playerId, ignored -> new HashMap<>());
+
+        if (!config.actionBar().priority().preemptOnHigherPriority() && latest.containsKey(achievement.id())) {
+            return;
+        }
+
+        latest.put(achievement.id(), update);
+        actionBarQueues
+                .computeIfAbsent(playerId, ignored -> new PriorityQueue<>(progressComparator()))
+                .offer(update);
+    }
+
+    private void sendActionBar(Player player, AchievementDefinition achievement, int current, int target) {
         Component meter = buildProgressBar(current, target, 16);
         Component message = Component.text(achievement.title(), NamedTextColor.AQUA)
                 .append(Component.space())
@@ -163,6 +194,68 @@ public class AchievementProgressService {
                 .append(Component.space())
                 .append(Component.text(current + "/" + target, NamedTextColor.GRAY));
         player.sendActionBar(message);
+    }
+
+    private void startActionBarDispatcher() {
+        if (!config.actionBar().progressEnabled()) {
+            return;
+        }
+        if (!config.actionBar().priority().enabled()) {
+            return;
+        }
+        int intervalTicks = Math.max(1, config.actionBar().priority().displayIntervalTicks());
+        plugin.getServer().getScheduler().runTaskTimer(plugin, this::dispatchQueuedProgress, intervalTicks, intervalTicks);
+    }
+
+    private void dispatchQueuedProgress() {
+        long now = System.currentTimeMillis();
+        long cooldownMillis = config.actionBar().priority().cooldownTicks() * 50L;
+
+        for (UUID playerId : new ArrayList<>(actionBarQueues.keySet())) {
+            Player player = Bukkit.getPlayer(playerId);
+            if (player == null || !player.isOnline()) {
+                actionBarQueues.remove(playerId);
+                queuedByAchievement.remove(playerId);
+                lastActionBarAt.remove(playerId);
+                continue;
+            }
+
+            long lastAt = lastActionBarAt.getOrDefault(playerId, 0L);
+            if (cooldownMillis > 0 && now - lastAt < cooldownMillis) {
+                continue;
+            }
+
+            PriorityQueue<ProgressUpdate> queue = actionBarQueues.get(playerId);
+            Map<String, ProgressUpdate> latest = queuedByAchievement.get(playerId);
+            if (queue == null || latest == null || queue.isEmpty() || latest.isEmpty()) {
+                continue;
+            }
+
+            ProgressUpdate next = null;
+            while (!queue.isEmpty()) {
+                ProgressUpdate candidate = queue.poll();
+                ProgressUpdate current = latest.get(candidate.achievement().id());
+                if (candidate == current) {
+                    next = candidate;
+                    latest.remove(candidate.achievement().id());
+                    break;
+                }
+            }
+
+            if (next == null) {
+                continue;
+            }
+
+            sendActionBar(player, next.achievement(), next.current(), next.target());
+            lastActionBarAt.put(playerId, now);
+        }
+    }
+
+    private Comparator<ProgressUpdate> progressComparator() {
+        return Comparator
+                .comparingInt(ProgressUpdate::remaining)
+                .thenComparing((ProgressUpdate update) -> -update.increment())
+                .thenComparing(update -> update.achievement().id());
     }
 
     private Component buildProgressBar(int current, int target, int width) {
@@ -215,7 +308,7 @@ public class AchievementProgressService {
 
     private void indexList(Map<String, List<AchievementDefinition>> index, Set<String> keys, AchievementDefinition achievement) {
         for (String key : keys) {
-            index.computeIfAbsent(key, id -> new ArrayList<>()).add(achievement);
+            index.computeIfAbsent(key, ignored -> new ArrayList<>()).add(achievement);
         }
     }
 
@@ -223,7 +316,7 @@ public class AchievementProgressService {
         if (key == null || key.isBlank()) {
             return;
         }
-        index.computeIfAbsent(key, id -> new ArrayList<>()).add(achievement);
+        index.computeIfAbsent(key, ignored -> new ArrayList<>()).add(achievement);
     }
 
     private String normalizeMaterial(Material material) {
@@ -232,5 +325,11 @@ public class AchievementProgressService {
 
     private String normalizeEntity(EntityType type) {
         return type.name().toLowerCase();
+    }
+
+    private record ProgressUpdate(AchievementDefinition achievement, int current, int target, int increment) {
+        private int remaining() {
+            return Math.max(0, target - current);
+        }
     }
 }

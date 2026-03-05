@@ -17,7 +17,18 @@ import dev.pcrykh.runtime.ConfigException;
 import dev.pcrykh.runtime.ConfigLoader;
 import dev.pcrykh.runtime.ConfigSaver;
 import dev.pcrykh.runtime.FactsBroadcaster;
+import dev.pcrykh.runtime.NpcCatalog;
+import dev.pcrykh.runtime.NpcDefinitionLoader;
+import dev.pcrykh.runtime.NpcSourceResolver;
+import dev.pcrykh.runtime.PlayerStateLifecycleListener;
+import dev.pcrykh.runtime.PlayerStateStore;
+import dev.pcrykh.runtime.QuestCatalog;
+import dev.pcrykh.runtime.QuestDefinitionLoader;
+import dev.pcrykh.runtime.QuestService;
+import dev.pcrykh.runtime.QuestSourceResolver;
 import dev.pcrykh.runtime.RuntimeConfig;
+import dev.pcrykh.runtime.VillagerConversationService;
+import dev.pcrykh.runtime.VillagerInteractionListener;
 import dev.pcrykh.runtime.command.PcrykhCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -39,6 +50,7 @@ public class PcrykhPlugin extends JavaPlugin {
     private AchievementCatalog catalog;
     private AchievementMenuService menuService;
     private HotbarBeaconService hotbarService;
+    private PlayerStateStore playerStateStore;
 
     @Override
     public void onEnable() {
@@ -60,7 +72,21 @@ public class PcrykhPlugin extends JavaPlugin {
             AchievementDefinitionLoader achievementLoader = new AchievementDefinitionLoader(mapper);
             catalog = new AchievementCatalog(achievementLoader.loadAll(achievementFiles), categoryCatalog);
 
-            AchievementProgressService progressService = new AchievementProgressService(catalog, config);
+            NpcSourceResolver npcResolver = new NpcSourceResolver();
+            List<Path> npcFiles = npcResolver.resolve(getDataFolder().toPath(), config.npcSources());
+            NpcDefinitionLoader npcLoader = new NpcDefinitionLoader(mapper);
+            NpcCatalog npcCatalog = new NpcCatalog(npcLoader.loadAll(npcFiles));
+
+            QuestSourceResolver questResolver = new QuestSourceResolver();
+            List<Path> questFiles = questResolver.resolve(getDataFolder().toPath(), config.questSources());
+            QuestDefinitionLoader questLoader = new QuestDefinitionLoader(mapper);
+            QuestCatalog questCatalog = new QuestCatalog(questLoader.loadAll(questFiles), npcCatalog);
+
+            playerStateStore = new PlayerStateStore(mapper, getDataFolder().toPath(), config);
+            QuestService questService = new QuestService(questCatalog, playerStateStore);
+            VillagerConversationService conversationService = new VillagerConversationService(this, config, npcCatalog, questService, playerStateStore);
+
+            AchievementProgressService progressService = new AchievementProgressService(this, catalog, config);
 
             menuService = new AchievementMenuService(catalog, progressService, config);
             hotbarService = new HotbarBeaconService(this, menuService);
@@ -68,6 +94,8 @@ public class PcrykhPlugin extends JavaPlugin {
             Bukkit.getPluginManager().registerEvents(new AchievementMenuListener(menuService, config, configSaver, getDataFolder().toPath()), this);
             Bukkit.getPluginManager().registerEvents(new HotbarBeaconListener(hotbarService), this);
             Bukkit.getPluginManager().registerEvents(new AchievementProgressListener(progressService), this);
+            Bukkit.getPluginManager().registerEvents(new VillagerInteractionListener(conversationService), this);
+            Bukkit.getPluginManager().registerEvents(new PlayerStateLifecycleListener(playerStateStore, conversationService), this);
 
             if (getCommand("pcrykh") != null) {
                 getCommand("pcrykh").setExecutor(new PcrykhCommand(menuService));
@@ -75,6 +103,15 @@ public class PcrykhPlugin extends JavaPlugin {
 
             new FactsBroadcaster(this, config).start();
             hotbarService.startEnforcementTask();
+
+            if (config.autosave().enabled()) {
+                int intervalTicks = Math.max(20, config.autosave().intervalSeconds() * 20);
+                Bukkit.getScheduler().runTaskTimer(this, () -> {
+                    if (playerStateStore != null) {
+                        playerStateStore.saveAll();
+                    }
+                }, intervalTicks, intervalTicks);
+            }
         } catch (ConfigException ex) {
             getLogger().severe("Config error: " + ex.getMessage());
             Bukkit.getPluginManager().disablePlugin(this);
@@ -91,6 +128,15 @@ public class PcrykhPlugin extends JavaPlugin {
         saveResource("config.json", false);
         saveResourceDirectory("achievements");
         saveResourceDirectory("facts");
+        saveResourceDirectory("npcs");
+        saveResourceDirectory("quests");
+    }
+
+    @Override
+    public void onDisable() {
+        if (playerStateStore != null) {
+            playerStateStore.saveAll();
+        }
     }
 
     private void saveResourceDirectory(String resourceDir) {

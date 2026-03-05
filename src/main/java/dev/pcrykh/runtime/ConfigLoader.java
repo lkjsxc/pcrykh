@@ -2,7 +2,6 @@ package dev.pcrykh.runtime;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -37,6 +36,8 @@ public class ConfigLoader {
             require(root, "facts_sources");
             require(root, "category_sources");
             require(root, "achievement_sources");
+            require(root, "npc_sources");
+            require(root, "quest_sources");
 
             JsonNode commands = root.get("commands");
             require(commands, "root");
@@ -46,49 +47,28 @@ public class ConfigLoader {
             }
 
             String specVersion = root.get("spec_version").asText();
-            if (!specVersion.startsWith("4.")) {
-                throw new ConfigException("spec_version must start with 4.");
+            if (!specVersion.startsWith("5.")) {
+                throw new ConfigException("spec_version must start with 5.");
             }
 
             JsonNode runtime = root.get("runtime");
             require(runtime, "autosave");
             require(runtime, "chat");
             require(runtime, "action_bar");
+            require(runtime, "dialogue");
+            require(runtime, "persistence");
 
-            JsonNode factsSourcesNode = root.get("facts_sources");
-            JsonNode categorySourcesNode = root.get("category_sources");
-            JsonNode achievementSources = root.get("achievement_sources");
-            if (!factsSourcesNode.isArray() || factsSourcesNode.size() == 0) {
-                throw new ConfigException("facts_sources must be a non-empty array");
-            }
-            if (!categorySourcesNode.isArray() || categorySourcesNode.size() == 0) {
-                throw new ConfigException("category_sources must be a non-empty array");
-            }
-            if (!achievementSources.isArray() || achievementSources.size() == 0) {
-                throw new ConfigException("achievement_sources must be a non-empty array");
-            }
-
-            List<String> sources = new ArrayList<>();
-            ArrayNode sourceArray = (ArrayNode) achievementSources;
-            for (JsonNode entry : sourceArray) {
-                sources.add(entry.asText());
-            }
-
-            List<String> factSources = new ArrayList<>();
-            ArrayNode factsSourceArray = (ArrayNode) factsSourcesNode;
-            for (JsonNode entry : factsSourceArray) {
-                factSources.add(entry.asText());
-            }
-
-            List<String> categorySources = new ArrayList<>();
-            ArrayNode categorySourceArray = (ArrayNode) categorySourcesNode;
-            for (JsonNode entry : categorySourceArray) {
-                categorySources.add(entry.asText());
-            }
+            List<String> achievementSources = parseSourceArray(root.get("achievement_sources"), "achievement_sources");
+            List<String> factSources = parseSourceArray(root.get("facts_sources"), "facts_sources");
+            List<String> categorySources = parseSourceArray(root.get("category_sources"), "category_sources");
+            List<String> npcSources = parseSourceArray(root.get("npc_sources"), "npc_sources");
+            List<String> questSources = parseSourceArray(root.get("quest_sources"), "quest_sources");
 
             RuntimeConfig.AutosaveConfig autosave = parseAutosave(runtime.get("autosave"));
             RuntimeConfig.ChatConfig chat = parseChat(runtime.get("chat"));
             RuntimeConfig.ActionBarConfig actionBar = parseActionBar(runtime.get("action_bar"));
+            RuntimeConfig.DialogueConfig dialogue = parseDialogue(runtime.get("dialogue"));
+            RuntimeConfig.PersistenceConfig persistence = parsePersistence(runtime.get("persistence"));
 
             FactsSourceResolver factsResolver = new FactsSourceResolver();
             List<Path> factFiles = factsResolver.resolve(dataFolder, factSources);
@@ -104,10 +84,14 @@ public class ConfigLoader {
                     autosave,
                     chat,
                     actionBar,
+                    dialogue,
+                    persistence,
                     facts,
-                        factSources,
-                        categorySources,
-                    sources
+                    factSources,
+                    categorySources,
+                    achievementSources,
+                    npcSources,
+                    questSources
             );
         } catch (IOException ex) {
             throw new ConfigException("Failed to read config.json", ex);
@@ -120,12 +104,27 @@ public class ConfigLoader {
         }
     }
 
+    private List<String> parseSourceArray(JsonNode node, String fieldName) {
+        if (node == null || !node.isArray() || node.isEmpty()) {
+            throw new ConfigException(fieldName + " must be a non-empty array");
+        }
+        List<String> values = new ArrayList<>();
+        for (JsonNode entry : node) {
+            String value = entry.asText();
+            if (value == null || value.isBlank()) {
+                throw new ConfigException(fieldName + " entries must be non-empty");
+            }
+            values.add(value);
+        }
+        return values;
+    }
+
     private RuntimeConfig.AutosaveConfig parseAutosave(JsonNode autosave) {
         require(autosave, "enabled");
         require(autosave, "interval_seconds");
         return new RuntimeConfig.AutosaveConfig(
                 autosave.get("enabled").asBoolean(),
-                autosave.get("interval_seconds").asInt()
+                Math.max(1, autosave.get("interval_seconds").asInt())
         );
     }
 
@@ -137,13 +136,49 @@ public class ConfigLoader {
         return new RuntimeConfig.ChatConfig(
                 chat.get("announce_achievements").asBoolean(),
                 chat.get("facts_enabled").asBoolean(),
-                chat.get("facts_interval_seconds").asInt(),
+                Math.max(1, chat.get("facts_interval_seconds").asInt()),
                 chat.get("prefix").asText()
         );
     }
 
     private RuntimeConfig.ActionBarConfig parseActionBar(JsonNode actionBar) {
         require(actionBar, "progress_enabled");
-        return new RuntimeConfig.ActionBarConfig(actionBar.get("progress_enabled").asBoolean());
+        require(actionBar, "priority");
+
+        JsonNode priority = actionBar.get("priority");
+        require(priority, "enabled");
+        require(priority, "display_interval_ticks");
+        require(priority, "cooldown_ticks");
+        require(priority, "preempt_on_higher_priority");
+
+        RuntimeConfig.PriorityConfig priorityConfig = new RuntimeConfig.PriorityConfig(
+                priority.get("enabled").asBoolean(),
+                Math.max(1, priority.get("display_interval_ticks").asInt()),
+                Math.max(0, priority.get("cooldown_ticks").asInt()),
+                priority.get("preempt_on_higher_priority").asBoolean()
+        );
+
+        return new RuntimeConfig.ActionBarConfig(actionBar.get("progress_enabled").asBoolean(), priorityConfig);
+    }
+
+    private RuntimeConfig.DialogueConfig parseDialogue(JsonNode dialogue) {
+        require(dialogue, "timeout_seconds");
+        require(dialogue, "freeze_villager");
+        return new RuntimeConfig.DialogueConfig(
+                Math.max(1, dialogue.get("timeout_seconds").asInt()),
+                dialogue.get("freeze_villager").asBoolean()
+        );
+    }
+
+    private RuntimeConfig.PersistenceConfig parsePersistence(JsonNode persistence) {
+        require(persistence, "player_state");
+        JsonNode playerState = persistence.get("player_state");
+        require(playerState, "enabled");
+        require(playerState, "directory");
+        RuntimeConfig.PlayerStateConfig playerStateConfig = new RuntimeConfig.PlayerStateConfig(
+                playerState.get("enabled").asBoolean(),
+                playerState.get("directory").asText()
+        );
+        return new RuntimeConfig.PersistenceConfig(playerStateConfig);
     }
 }
