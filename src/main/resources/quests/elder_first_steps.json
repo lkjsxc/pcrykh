@@ -1,7 +1,0 @@
-{
-  "id": "elder_first_steps",
-  "npc_id": "village_elder",
-  "title": "First Steps",
-  "description": "Speak with the elder and accept your first assignment.",
-  "affinity_reward": 5
-}
