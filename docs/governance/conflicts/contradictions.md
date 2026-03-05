@@ -10,3 +10,5 @@
 		- GUI declared out-of-scope vs GUI menu specification
 		- corrupted config schema blocks containing duplicated spec text
 		- achievement ordering tie-breaker conflict (category name vs id); standardized to category order then id
+		- deprecations policy requiring immediate deletion vs deprecated files left in-tree
+		- lifecycle `shutdown` declaring no persistence actions vs dialogue state resume requirements

@@ -34,3 +34,17 @@
 		- resolution:
 			- normalize schema blocks to valid JSON
 			- remove embedded spec text from schema code fences
+	- C-011 — Deprecation policy vs retained deprecated files:
+		- conflict:
+			- deprecations policy requires obsolete specs to be removed immediately
+			- deprecated files were still present under `docs/domain/achievements/` and `docs/config/`
+		- resolution:
+			- delete all deprecated non-canonical files immediately
+			- keep canonical references only through README TOCs
+	- C-012 — Runtime lifecycle no-persistence vs required state resume:
+		- conflict:
+			- lifecycle declared no shutdown persistence actions
+			- villager conversation requirements need state resume from the latest saved node
+		- resolution:
+			- persist player quest/dialogue state using autosave and quit-time save
+			- lifecycle shutdown semantics are superseded by persistence guarantees in spec v5
