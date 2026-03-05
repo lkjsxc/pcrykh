@@ -14,7 +14,8 @@
   - layout:
     - slot `20`: profile button
     - slot `22`: achievements button
-    - slot `24`: settings button
+    - slot `24`: quests button
+    - slot `26`: settings button
   - button_rendering:
     - profile:
       - material: `PLAYER_HEAD`
@@ -26,6 +27,11 @@
       - name: `Achievements`
       - lore:
         - `Browse the catalog`
+    - quests:
+      - material: `MAP`
+      - name: `Quests`
+      - lore:
+        - `Track your active journeys`
     - settings:
       - material: `REDSTONE`
       - name: `Settings`
@@ -34,4 +40,5 @@
   - behavior:
     - clicking `Profile` opens [profile.md](profile.md)
     - clicking `Achievements` opens [achievements.md](achievements.md) at page index `0`
+    - clicking `Quests` opens [quests.md](quests.md) at page index `0`
     - clicking `Settings` opens [settings.md](settings.md)

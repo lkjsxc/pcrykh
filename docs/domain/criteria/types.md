@@ -77,7 +77,8 @@
       ```
     - rules:
       - `mode` MUST be a non-empty string or `modes` MUST be a non-empty array of strings
-      - valid modes: `walk`, `sprint`, `sneak`, `jump`, `ethereal_wing`, `boat`
-      - `count` is distance in blocks for `walk`, `sprint`, `sneak`, `ethereal_wing`, and `boat`
+      - valid modes: `walk`, `sprint`, `sneak`, `swim`, `jump`, `ethereal_wing`, `boat`
+      - user-facing aliases map to canonical modes: `running` -> `sprint`, `crouching` -> `sneak`, `elytra` -> `ethereal_wing`
+      - `count` is distance in blocks for `walk`, `sprint`, `sneak`, `swim`, `ethereal_wing`, and `boat`
       - `count` is total jump count for `jump`
       - `ethereal_wing` requires gliding with elytra equipped

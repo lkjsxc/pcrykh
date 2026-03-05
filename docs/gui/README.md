@@ -7,6 +7,7 @@
 	- children:
 		- [menu.md](menu.md)
 		- [achievements.md](achievements.md)
+		- [quests.md](quests.md)
 		- [profile.md](profile.md)
 		- [settings.md](settings.md)
 		- [navigation.md](navigation.md)

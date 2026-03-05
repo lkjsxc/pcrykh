@@ -28,4 +28,4 @@
     - bottom row (`45..53`) is reserved for navigation and status items only
     - content MUST NOT be placed in slots `45..53`
   - navigation_return:
-    - slot `49` returns to [menu.md](menu.md)
+    - slot `45` returns to [menu.md](menu.md)

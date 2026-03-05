@@ -9,3 +9,6 @@
 		- C-010 — Corrupted config schema blocks
 		- C-011 — Deprecation policy vs retained deprecated files
 		- C-012 — Runtime lifecycle no-persistence vs required state resume
+		- C-013 — Quests visibility requirement vs menu destination set
+		- C-014 — Movement achievement target set vs canonical mode list omission
+		- C-015 — Achievements navigation return slot vs shared navigation slot contract

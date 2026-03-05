@@ -12,3 +12,6 @@
 		- achievement ordering tie-breaker conflict (category name vs id); standardized to category order then id
 		- deprecations policy requiring immediate deletion vs deprecated files left in-tree
 		- lifecycle `shutdown` declaring no persistence actions vs dialogue state resume requirements
+		- quests required to be viewable from the menu vs menu lacking a quests entrypoint
+		- swimming achievements required by behavior goals vs movement mode lists omitting `swim`
+		- achievements page returning via slot `49` vs shared navigation reserving slot `49` for page metadata and slot `45` for `Back`

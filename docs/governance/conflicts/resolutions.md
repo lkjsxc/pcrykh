@@ -48,3 +48,24 @@
 		- resolution:
 			- persist player quest/dialogue state using autosave and quit-time save
 			- lifecycle shutdown semantics are superseded by persistence guarantees in spec v5
+	- C-013 — Quests visibility requirement vs menu destination set:
+		- conflict:
+			- quests are required to be viewable from the main menu
+			- menu destinations only exposed profile, achievements, and settings
+		- resolution:
+			- add `Quests` as a first-class main menu button
+			- define a canonical quests GUI page and route the menu click to it
+	- C-014 — Movement achievement target set vs canonical mode list omission:
+		- conflict:
+			- movement achievements require walking, running, crouching, swimming, jumping, elytra flight, and boat travel
+			- canonical mode lists omitted `swim`
+		- resolution:
+			- add `swim` to canonical movement mode lists in criteria and runtime specs
+			- define alias mapping for user-facing terminology to canonical tokens
+	- C-015 — Achievements navigation return slot vs shared navigation slot contract:
+		- conflict:
+			- achievements page assigned slot `49` as return-to-menu
+			- shared navigation assigns slot `49` to page metadata and slot `45` to `Back`
+		- resolution:
+			- standardize slot `45` as `Back` across paged GUI screens
+			- preserve slot `49` exclusively for page metadata

@@ -15,11 +15,13 @@
     - progress notifications MUST be delivered through the action-bar priority queue
   - movement_modes:
     - movement criteria are evaluated by mode
-    - modes: `walk`, `sprint`, `sneak`, `jump`, `ethereal_wing`, `boat`
+    - modes: `walk`, `sprint`, `sneak`, `swim`, `jump`, `ethereal_wing`, `boat`
+    - user-facing aliases map to canonical modes: `running` -> `sprint`, `crouching` -> `sneak`, `elytra` -> `ethereal_wing`
     - `jump` increments by 1 per detected jump
     - other modes increment by accumulated distance where sub-block movement is preserved until converted to integer progress
+    - `swim` matches player swimming movement in water while not riding a vehicle
     - `ethereal_wing` matches gliding with elytra equipped
-    - mode selection order is `boat` -> `ethereal_wing` -> `jump` -> `sneak` -> `sprint` -> `walk`
+    - mode selection order is `boat` -> `ethereal_wing` -> `swim` -> `jump` -> `sneak` -> `sprint` -> `walk`
   - ordering:
     - achievements are ordered by category order, then ascending `id`
     - category order is defined in [domain/achievements/catalog/categories.md](../domain/achievements/catalog/categories.md)

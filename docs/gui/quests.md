@@ -1,0 +1,29 @@
+# Quests page
+
+- node: docs/gui/quests.md
+  - purpose:
+    - provide a paged view of accepted and completed quests
+  - inventory:
+    - size: 54 slots
+    - title: `Quests`
+    - all clicks are cancelled; no item movement is permitted
+  - content_layout:
+    - slots `0..44` render quests in ascending `id`
+    - active quests MUST be rendered before completed quests
+    - if no quests are loaded, slot `22` contains a `BARRIER` named `No quests loaded.` and all other slots are empty
+  - item_rendering:
+    - material: `MAP`
+    - display name: `title`
+    - lore lines (in order):
+      - `id: <quest_id>`
+      - `npc: <npc_id>`
+      - `stage: <quest.stage>`
+      - `progress: <quest.progress>/<target>`
+      - `state: <accepted|completed>`
+  - navigation:
+    - pagination uses [navigation.md](navigation.md)
+    - page size is 45 quests
+    - slot `45` returns to [menu.md](menu.md)
+  - large_chest_layout:
+    - bottom row (`45..53`) is reserved for navigation and status items only
+    - content MUST NOT be placed in slots `45..53`
