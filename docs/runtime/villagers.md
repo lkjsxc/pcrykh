@@ -10,6 +10,7 @@
   - interruption:
     - if player does not interact for `runtime.dialogue.timeout_seconds`, conversation is interrupted
     - interrupted conversation MUST restore to the most recent saved dialogue node
+    - affinity and dialogue state deltas after the last checkpoint MUST be discarded on interruption
   - quest_acceptance:
     - quest is accepted only at `accept_quest` node type
     - acceptance binds quest state to `(player_uuid, npc_id)`

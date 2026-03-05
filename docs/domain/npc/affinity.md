@@ -5,7 +5,9 @@
     - tracked per `(player_uuid, npc_id)`
   - fields:
     - `affinity`: integer in [-100, 100]
-    - `last_updated_at_epoch_ms`: integer
+    - `last_saved_node_id`: string
+    - `dialogue_visits`: integer
+    - `active_quest_id`: string
   - mutation_sources:
     - dialogue transition `affinity_delta`
     - quest completion `affinity_reward`

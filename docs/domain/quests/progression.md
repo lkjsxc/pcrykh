@@ -2,13 +2,14 @@
 
 - node: docs/domain/quests/progression.md
   - per_player_fields:
-    - `accepted_quests`: set
-    - `active_quest_by_npc`: map of npc_id -> quest_id
-    - `quest_stage`: map of quest_id -> stage_id
-    - `quest_counters`: map of quest_id -> integer
-    - `completed_quests`: set
+    - `quest.accepted`: boolean
+    - `quest.completed`: boolean
+    - `quest.stage`: string
+    - `quest.progress`: integer
+    - `quest.accepted_at_epoch_ms`: integer
+    - `npc.active_quest_id`: string
   - rules:
     - one active quest per npc per player
-    - stage transition occurs when objective target is met
+    - `accept_quest` transition sets `quest.accepted=true` and `quest.stage=accepted`
     - stage and counter updates MUST be persisted at autosave and quit
     - completion emits reward payload and optional affinity reward

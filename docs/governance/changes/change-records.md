@@ -72,4 +72,13 @@
           - "docs/foundation/versioning.md"
           - "docs/governance/changes/change-records.md"
         notes: "Breaking spec update with no migration guarantees."
+      - id: "CR-20260305-003"
+        date: "2026-03-05"
+        summary: "Aligned villager interruption rollback and persisted quest/npc progression fields with runtime implementation."
+        files:
+          - "docs/domain/quests/progression.md"
+          - "docs/domain/npc/affinity.md"
+          - "docs/runtime/villagers.md"
+          - "docs/governance/changes/change-records.md"
+        notes: "Checkpoint semantics now explicitly discard unsaved deltas on timeout interruption."
   ```
