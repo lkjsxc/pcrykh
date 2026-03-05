@@ -64,7 +64,7 @@ public class VillagerConversationService {
             if (active != null) {
                 endSession(player, false);
             }
-            startSession(player, npcId, villager.getUniqueId());
+            startSession(player, npcId);
             return true;
         }
 
@@ -78,24 +78,36 @@ public class VillagerConversationService {
         if (session == null) {
             return;
         }
+
+        if (!interrupted && session.pendingAffinityDelta != 0) {
+            commitCheckpoint(player, session, session.currentNodeId);
+        }
+
         releaseNpcLock(session.npcId);
         if (interrupted) {
             player.sendMessage(Component.text("Conversation interrupted. State restored to latest checkpoint.", NamedTextColor.RED));
         }
     }
 
-    private void startSession(Player player, String npcId, UUID villagerId) {
+    private void startSession(Player player, String npcId) {
         NpcDefinition npc = npcCatalog.get(npcId);
         if (npc == null) {
             return;
         }
 
         PlayerStateStore.NpcProgressState npcState = stateStore.getNpcState(player.getUniqueId(), npcId);
+        npcState.dialogueVisits++;
         String startNodeId = npcState.lastSavedNodeId == null || npcState.lastSavedNodeId.isBlank()
                 ? npc.startNodeId()
                 : npcState.lastSavedNodeId;
 
-        ConversationSession session = new ConversationSession(npcId, villagerId, startNodeId, System.currentTimeMillis());
+        ConversationSession session = new ConversationSession(
+            npcId,
+            startNodeId,
+            npcState.affinity,
+            0,
+            System.currentTimeMillis()
+        );
         sessionByPlayer.put(player.getUniqueId(), session);
         activeSessionsByNpc.merge(npcId, 1, Integer::sum);
         applyNpcFreeze(npcId, true);
@@ -125,18 +137,18 @@ public class VillagerConversationService {
             return;
         }
 
-        PlayerStateStore.NpcProgressState npcState = stateStore.getNpcState(player.getUniqueId(), session.npcId);
         if (node.affinityDelta() != 0) {
-            npcState.affinity = clampAffinity(npcState.affinity + node.affinityDelta());
+            session.pendingAffinityDelta += node.affinityDelta();
         }
         if (node.saveCheckpoint()) {
-            npcState.lastSavedNodeId = node.id();
+            commitCheckpoint(player, session, node.id());
         }
 
         player.sendMessage(Component.text(node.text(), NamedTextColor.YELLOW));
 
         if (node.acceptQuest()) {
             NpcDefinition npc = npcCatalog.get(session.npcId);
+            commitCheckpoint(player, session, node.id());
             boolean accepted = npc != null && questService.acceptQuest(player, npc.questId());
             if (npc != null) {
                 QuestDefinition quest = questService.getQuest(npc.questId());
@@ -147,14 +159,24 @@ public class VillagerConversationService {
                     player.sendMessage(Component.text("Quest already accepted: " + questTitle, NamedTextColor.GRAY));
                 }
             }
-            npcState.lastSavedNodeId = node.id();
             endSession(player, false);
             return;
         }
 
         if (node.nextNodeId() == null || node.nextNodeId().isBlank()) {
+            commitCheckpoint(player, session, node.id());
             endSession(player, false);
         }
+    }
+
+    private void commitCheckpoint(Player player, ConversationSession session, String checkpointNodeId) {
+        PlayerStateStore.NpcProgressState npcState = stateStore.getNpcState(player.getUniqueId(), session.npcId);
+        int nextAffinity = clampAffinity(session.checkpointAffinity + session.pendingAffinityDelta);
+        npcState.affinity = nextAffinity;
+        npcState.lastSavedNodeId = checkpointNodeId;
+
+        session.checkpointAffinity = nextAffinity;
+        session.pendingAffinityDelta = 0;
     }
 
     private DialogueNode resolveNode(String npcId, String nodeId) {
@@ -296,14 +318,22 @@ public class VillagerConversationService {
 
     private static class ConversationSession {
         private final String npcId;
-        private final UUID villagerEntityId;
         private String currentNodeId;
+        private int checkpointAffinity;
+        private int pendingAffinityDelta;
         private long lastInteractionAt;
 
-        private ConversationSession(String npcId, UUID villagerEntityId, String currentNodeId, long lastInteractionAt) {
+        private ConversationSession(
+                String npcId,
+                String currentNodeId,
+                int checkpointAffinity,
+                int pendingAffinityDelta,
+                long lastInteractionAt
+        ) {
             this.npcId = npcId;
-            this.villagerEntityId = villagerEntityId;
             this.currentNodeId = currentNodeId;
+            this.checkpointAffinity = checkpointAffinity;
+            this.pendingAffinityDelta = pendingAffinityDelta;
             this.lastInteractionAt = lastInteractionAt;
         }
     }

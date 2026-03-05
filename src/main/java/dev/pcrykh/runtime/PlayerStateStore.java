@@ -114,10 +114,14 @@ public class PlayerStateStore {
         public int affinity = 0;
         public String lastSavedNodeId = "";
         public String activeQuestId = "";
+        public int dialogueVisits = 0;
     }
 
     public static class QuestProgressState {
         public boolean accepted = false;
         public boolean completed = false;
+        public String stage = "none";
+        public int progress = 0;
+        public long acceptedAtEpochMs = 0L;
     }
 }

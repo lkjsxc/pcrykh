@@ -27,6 +27,9 @@ public class QuestService {
         }
 
         questState.accepted = true;
+        questState.stage = "accepted";
+        questState.progress = 0;
+        questState.acceptedAtEpochMs = System.currentTimeMillis();
 
         PlayerStateStore.NpcProgressState npcState = stateStore.getNpcState(playerId, quest.npcId());
         npcState.activeQuestId = questId;
