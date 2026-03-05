@@ -81,4 +81,11 @@
           - "docs/runtime/villagers.md"
           - "docs/governance/changes/change-records.md"
         notes: "Checkpoint semantics now explicitly discard unsaved deltas on timeout interruption."
+      - id: "CR-20260305-004"
+        date: "2026-03-05"
+        summary: "Hardened villager runtime with safe respawn recovery and removed repeated startup resource-save warnings."
+        files:
+          - "docs/runtime/villagers.md"
+          - "docs/governance/changes/change-records.md"
+        notes: "Managed NPCs are auto-recovered and resources are copied idempotently without warning spam."
   ```

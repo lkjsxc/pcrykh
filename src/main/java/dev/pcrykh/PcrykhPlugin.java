@@ -125,11 +125,19 @@ public class PcrykhPlugin extends JavaPlugin {
         if (!getDataFolder().exists() && !getDataFolder().mkdirs()) {
             throw new ConfigException("Failed to create data folder");
         }
-        saveResource("config.json", false);
+        saveResourceIfMissing("config.json");
         saveResourceDirectory("achievements");
         saveResourceDirectory("facts");
         saveResourceDirectory("npcs");
         saveResourceDirectory("quests");
+    }
+
+    private void saveResourceIfMissing(String resourcePath) {
+        Path target = getDataFolder().toPath().resolve(resourcePath);
+        if (Files.exists(target)) {
+            return;
+        }
+        saveResource(resourcePath, false);
     }
 
     @Override
@@ -170,7 +178,7 @@ public class PcrykhPlugin extends JavaPlugin {
                         JarEntry entry = entries.nextElement();
                         String name = entry.getName();
                         if (name.startsWith(normalized) && !entry.isDirectory()) {
-                            saveResource(name, false);
+                            saveResourceIfMissing(name);
                         }
                     }
                 }
@@ -193,7 +201,7 @@ public class PcrykhPlugin extends JavaPlugin {
             stream.filter(Files::isRegularFile).forEach(path -> {
                 Path relative = dirPath.relativize(path);
                 String resourcePath = normalized + relative.toString().replace('\\', '/');
-                saveResource(resourcePath, false);
+                saveResourceIfMissing(resourcePath);
             });
         } catch (Exception ex) {
             throw new ConfigException("Failed to copy resources from: " + dirPath, ex);

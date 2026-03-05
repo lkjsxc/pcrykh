@@ -7,7 +7,10 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.plugin.Plugin;
@@ -15,6 +18,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -48,6 +52,7 @@ public class VillagerConversationService {
         buildDialogueIndex();
         initializeVillagers();
         startTimeoutTask();
+        startNpcRecoveryTask();
     }
 
     public boolean handleInteraction(Player player, Villager villager) {
@@ -216,9 +221,14 @@ public class VillagerConversationService {
             }
             String tag = tagFor(npc.id());
             Villager villager = findVillagerByTag(world, tag);
+            Location spawnLocation = resolveSpawnLocation(npc, world);
             if (villager == null) {
-                Location location = new Location(world, npc.x(), npc.y(), npc.z());
-                villager = world.spawn(location, Villager.class);
+                villager = world.spawn(spawnLocation, Villager.class);
+            } else if (villager.isDead()) {
+                villager.remove();
+                villager = world.spawn(spawnLocation, Villager.class);
+            } else {
+                villager.teleport(spawnLocation);
             }
             configureVillager(villager, npc, tag);
             npcIdByEntityId.put(villager.getUniqueId(), npc.id());
@@ -241,6 +251,7 @@ public class VillagerConversationService {
         villager.setProfession(resolveProfession(npc.profession()));
         villager.setPersistent(true);
         villager.setRemoveWhenFarAway(false);
+        villager.setInvulnerable(true);
         villager.getScoreboardTags().add(tag);
         villager.setAI(true);
     }
@@ -249,11 +260,9 @@ public class VillagerConversationService {
         if (raw == null || raw.isBlank()) {
             return Villager.Profession.NONE;
         }
-        try {
-            return Villager.Profession.valueOf(raw.toUpperCase());
-        } catch (IllegalArgumentException ignored) {
-            return Villager.Profession.NONE;
-        }
+        NamespacedKey key = NamespacedKey.minecraft(raw.toLowerCase(Locale.ROOT));
+        Villager.Profession matched = Registry.VILLAGER_PROFESSION.get(key);
+        return matched == null ? Villager.Profession.NONE : matched;
     }
 
     private String tagFor(String npcId) {
@@ -262,6 +271,10 @@ public class VillagerConversationService {
 
     private void startTimeoutTask() {
         plugin.getServer().getScheduler().runTaskTimer(plugin, this::handleTimeouts, 20L, 20L);
+    }
+
+    private void startNpcRecoveryTask() {
+        plugin.getServer().getScheduler().runTaskTimer(plugin, this::recoverMissingNpcs, 40L, 200L);
     }
 
     private void handleTimeouts() {
@@ -299,6 +312,60 @@ public class VillagerConversationService {
             return;
         }
         activeSessionsByNpc.put(npcId, current - 1);
+    }
+
+    private void recoverMissingNpcs() {
+        for (NpcDefinition npc : npcCatalog.npcs()) {
+            UUID entityId = entityIdByNpcId.get(npc.id());
+            Villager villager = null;
+            if (entityId != null) {
+                var entity = Bukkit.getEntity(entityId);
+                if (entity instanceof Villager existing && !existing.isDead()) {
+                    villager = existing;
+                }
+            }
+
+            if (villager == null) {
+                World world = Bukkit.getWorld(npc.world());
+                if (world == null) {
+                    continue;
+                }
+                villager = world.spawn(resolveSpawnLocation(npc, world), Villager.class);
+                configureVillager(villager, npc, tagFor(npc.id()));
+                npcIdByEntityId.put(villager.getUniqueId(), npc.id());
+                entityIdByNpcId.put(npc.id(), villager.getUniqueId());
+            }
+
+            applyNpcFreeze(npc.id(), activeSessionsByNpc.containsKey(npc.id()));
+        }
+    }
+
+    private Location resolveSpawnLocation(NpcDefinition npc, World world) {
+        Location base = new Location(world, npc.x(), npc.y(), npc.z());
+        if (isSafeStandingLocation(base)) {
+            return base;
+        }
+
+        int highest = world.getHighestBlockYAt(base);
+        Location candidate = new Location(world, base.getX(), highest + 1.0, base.getZ());
+        if (isSafeStandingLocation(candidate)) {
+            return candidate;
+        }
+
+        for (int offset = 1; offset <= 6; offset++) {
+            Location up = candidate.clone().add(0, offset, 0);
+            if (isSafeStandingLocation(up)) {
+                return up;
+            }
+        }
+        return candidate;
+    }
+
+    private boolean isSafeStandingLocation(Location location) {
+        Block feet = location.getBlock();
+        Block head = location.clone().add(0, 1, 0).getBlock();
+        Block below = location.clone().add(0, -1, 0).getBlock();
+        return feet.isPassable() && head.isPassable() && !below.isPassable();
     }
 
     private void applyNpcFreeze(String npcId, boolean freeze) {

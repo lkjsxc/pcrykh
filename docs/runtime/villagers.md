@@ -7,6 +7,10 @@
   - immobilization:
     - if `runtime.dialogue.freeze_villager` is true, villager movement AI MUST be disabled during conversation
     - movement AI MUST be restored when dialogue ends or aborts
+  - resilience:
+    - managed villager NPCs are invulnerable
+    - runtime MUST periodically recover missing/dead managed villagers
+    - recovered villagers MUST spawn at a safe standing location near configured coordinates
   - interruption:
     - if player does not interact for `runtime.dialogue.timeout_seconds`, conversation is interrupted
     - interrupted conversation MUST restore to the most recent saved dialogue node
