@@ -21,6 +21,7 @@ import java.util.UUID;
 public class AchievementProgressListener implements Listener {
     private final AchievementProgressService progressService;
     private final Map<UUID, Long> lastJumpAt = new HashMap<>();
+    private final Map<UUID, Map<String, Double>> movementRemainders = new HashMap<>();
 
     public AchievementProgressListener(AchievementProgressService progressService) {
         this.progressService = progressService;
@@ -90,15 +91,26 @@ public class AchievementProgressListener implements Listener {
         if (!event.getFrom().getWorld().equals(event.getTo().getWorld())) {
             return;
         }
-        double distance = event.getFrom().toVector().distance(event.getTo().toVector());
-        int delta = (int) Math.floor(distance);
-        if (delta <= 0) {
-            return;
-        }
+
         Player player = event.getPlayer();
         String mode = resolveMovementMode(player, event);
-        int increment = mode.equals("jump") ? 1 : delta;
-        progressService.onMovement(player, mode, increment);
+        if ("jump".equals(mode)) {
+            progressService.onMovement(player, mode, 1);
+            return;
+        }
+
+        double distance = event.getFrom().toVector().distance(event.getTo().toVector());
+        if (distance <= 0) {
+            return;
+        }
+
+        Map<String, Double> byMode = movementRemainders.computeIfAbsent(player.getUniqueId(), ignored -> new HashMap<>());
+        double total = byMode.getOrDefault(mode, 0.0) + distance;
+        int delta = (int) Math.floor(total);
+        byMode.put(mode, total - delta);
+        if (delta > 0) {
+            progressService.onMovement(player, mode, delta);
+        }
     }
 
     private String resolveMovementMode(Player player, PlayerMoveEvent event) {
@@ -128,7 +140,7 @@ public class AchievementProgressListener implements Listener {
             return false;
         }
         String type = player.getVehicle().getType().name();
-        return type.contains("BOAT");
+        return type.contains("BOAT") || type.endsWith("_BOAT");
     }
 
     private boolean isEtherealWing(Player player) {
