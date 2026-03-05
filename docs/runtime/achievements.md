@@ -12,12 +12,14 @@
     - progress is computed per criteria definition
     - the runtime MUST expose `<current>` and `<target>` for GUI rendering
     - progress values are integers
+    - progress notifications MUST be delivered through the action-bar priority queue
   - movement_modes:
     - movement criteria are evaluated by mode
     - modes: `walk`, `sprint`, `sneak`, `jump`, `ethereal_wing`, `boat`
-    - `jump` increments by 1 per jump
-    - other modes increment by integer block distance
+    - `jump` increments by 1 per detected jump
+    - other modes increment by accumulated distance where sub-block movement is preserved until converted to integer progress
     - `ethereal_wing` matches gliding with elytra equipped
+    - mode selection order is `boat` -> `ethereal_wing` -> `jump` -> `sneak` -> `sprint` -> `walk`
   - ordering:
     - achievements are ordered by category order, then ascending `id`
     - category order is defined in [domain/achievements/catalog/categories.md](../domain/achievements/catalog/categories.md)

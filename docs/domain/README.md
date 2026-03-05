@@ -8,3 +8,5 @@
 		- [achievements/README.md](achievements/README.md)
 		- [criteria/README.md](criteria/README.md)
 		- [facts/README.md](facts/README.md)
+		- [npc/README.md](npc/README.md)
+		- [quests/README.md](quests/README.md)

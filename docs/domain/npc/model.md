@@ -1,0 +1,24 @@
+# NPC model
+
+- node: docs/domain/npc/model.md
+  - object: npc_definition
+  - required_fields:
+    - `id`: lowercase snake_case unique id
+    - `display_name`: non-empty string
+    - `entity_type`: MUST be `VILLAGER`
+    - `profession`: villager profession enum; story starters MUST use `NONE`
+    - `world`: world name
+    - `position.x`: number
+    - `position.y`: number
+    - `position.z`: number
+    - `dialogue_graph_id`: string
+    - `quest_accept_node_id`: string
+  - optional_fields:
+    - `story_enabled`: boolean (default `true`)
+    - `tags`: string array
+    - `default_affinity`: integer (default `0`)
+  - constraints:
+    - `id` MUST be globally unique
+    - each `dialogue_graph_id` MUST exist
+    - each `quest_accept_node_id` MUST exist inside the bound dialogue graph
+    - file lines MUST be <= 300

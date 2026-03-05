@@ -2,18 +2,35 @@
 
 - node: docs/runtime/action-bar.md
   - purpose:
-    - notify players whenever progress increases for an achievement
+    - notify players whenever progress increases for one or more achievements
   - config_binding:
     - `runtime.action_bar.progress_enabled`
+    - `runtime.action_bar.priority.enabled`
+    - `runtime.action_bar.priority.display_interval_ticks`
+    - `runtime.action_bar.priority.cooldown_ticks`
+    - `runtime.action_bar.priority.preempt_on_higher_priority`
   - message_format:
     - `<title> <progress_bar> <current>/<target>`
+  - queue_model:
+    - each player has an independent priority queue
+    - queue entries are keyed by `achievement_id`
+    - enqueuing the same `achievement_id` MUST replace existing queued entry (dedupe)
+    - dispatch runs every `display_interval_ticks`
+  - priority_order:
+    - primary: lower `remaining = target - current` is higher priority
+    - secondary: higher `last_increment` is higher priority
+    - tertiary: lexical ascending `achievement_id`
+  - preemption:
+    - if `preempt_on_higher_priority` is true and a higher-priority entry arrives during cooldown, replace the pending display entry
+  - anti_spam:
+    - a player cannot receive more than one action-bar update inside `cooldown_ticks`
   - meter:
     - render a fixed-width progress bar using unicode blocks
     - width: 16
     - filled segment: `█`
     - empty segment: `░`
     - filled segment color is based on progress ratio
-    - empty segments use a dark gray color
+    - empty segments use dark gray color
   - color_levels:
     - `ratio < 0.25`: red
     - `0.25 <= ratio < 0.50`: gold

@@ -8,3 +8,5 @@
     - [achievements.md](achievements.md)
     - [categories.md](categories.md)
     - [facts.md](facts.md)
+    - [npcs.md](npcs.md)
+    - [quests.md](quests.md)

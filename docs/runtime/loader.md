@@ -1,27 +1,27 @@
 # Config loader
 
 - node: docs/runtime/loader.md
-	- responsibilities:
-		- enforce the 300-line limit on `config.json`
-		- reject unsupported `spec_version`
-		- validate required top-level fields
-		- resolve `category_sources` to category files
-		- resolve `achievement_sources` to achievement entry or pack files
-		- resolve `facts_sources` to fact pack files
-		- validate category definitions
-		- validate achievement definitions
-		- reject duplicate achievement `id` values
-		- load but do not interpret `runtime.chat` and `runtime.action_bar`
-		- aggregate facts from all fact packs
-	- validation_order:
-		- file existence and line-count limit
-		- JSON parse
-		- required keys and `commands.root`
-		- `spec_version` validation
-		- `category_sources` resolution
-		- `achievement_sources` resolution
-		- `facts_sources` resolution
-		- category validation and achievement validation
-	- failure_behavior:
-		- any validation failure disables the plugin
-		- duplicate achievement `id` values are fatal
+  - responsibilities:
+    - enforce the 300-line limit on `config.json`
+    - reject unsupported `spec_version`
+    - validate required top-level fields
+    - resolve `category_sources`, `achievement_sources`, `facts_sources`, `npc_sources`, and `quest_sources`
+    - validate category definitions
+    - validate achievement definitions
+    - validate npc definitions and dialogue graph integrity
+    - validate quest definitions and stage linkage
+    - reject duplicate ids within each catalog type
+    - load runtime `chat`, `action_bar`, `dialogue`, and `persistence` sections
+    - aggregate facts from all fact packs
+  - validation_order:
+    - file existence and line-count limit
+    - JSON parse
+    - required keys and `commands.root`
+    - `spec_version` validation
+    - source resolution for categories, achievements, facts, npcs, quests
+    - category and achievement validation
+    - npc and dialogue validation
+    - quest validation
+  - failure_behavior:
+    - any validation failure disables the plugin
+    - duplicate ids are fatal
