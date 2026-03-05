@@ -1,0 +1,13 @@
+name: ${name}
+version: ${version}
+main: dev.pcrykh.PcrykhPlugin
+api-version: '1.21'
+commands:
+  pcrykh:
+    description: Open the pcrykh menu
+    usage: /pcrykh
+    permission: pcrykh.use
+permissions:
+  pcrykh.use:
+    description: Allows opening the pcrykh menu
+    default: true
