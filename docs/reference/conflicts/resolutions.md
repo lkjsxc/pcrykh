@@ -69,3 +69,33 @@
 		- resolution:
 			- standardize slot `45` as `Back` across paged GUI screens
 			- preserve slot `49` exclusively for page metadata
+	- C-016 — Reference root mixed file-and-directory children vs recursive tree rule:
+		- conflict:
+			- `docs/reference/` exposed direct markdown files and child directories at the same level
+			- the canonical recursive tree rule requires each directory to contain `README.md` plus either child directories or sibling markdown files, not both
+		- resolution:
+			- make `docs/reference/` a directory-only node
+			- move contradiction status fully into `docs/reference/conflicts/`
+			- delete stale top-level reference files that only preserved superseded migration state
+	- C-017 — NPC root mixed file-and-directory children vs recursive tree rule:
+		- conflict:
+			- `docs/spec/domain/npc/` exposed `model.md` and `affinity.md` alongside the `dialogue/` directory
+			- the canonical recursive tree rule requires each directory to contain `README.md` plus either child directories or sibling markdown files, not both
+		- resolution:
+			- make `docs/spec/domain/npc/` a directory-only node
+			- move direct NPC specification pages into a dedicated child subtree separate from `dialogue/`
+	- C-018 — Change-record mandate vs immediate obsolete-content deletion policy:
+		- conflict:
+			- change control required every change to be recorded in `docs/reference/change-records.md`
+			- deprecations policy and change-record rules both require obsolete history to be pruned immediately when it stops describing the current spec
+		- resolution:
+			- remove the mandatory change-record artifact
+			- track contradictions only in the conflict ledger when contradictory specifications are discovered
+			- keep canonical documentation focused on current state rather than historical migration evidence
+	- C-019 — Temporary drift path reference vs canonical in-repo authority requirement:
+		- conflict:
+			- contradiction summary cited `/tmp/docs/reference/DRIFT_MATRIX.md` as an authority input
+			- canonical documentation authority must live inside the repository and remain directly auditable
+		- resolution:
+			- remove temporary external-path references from canonical docs
+			- keep contradiction evidence inside `docs/reference/conflicts/` only

@@ -2,10 +2,12 @@
 
 Back: [/docs/reference/README.md](/docs/reference/README.md)
 
+Canonical contradiction authority for the current documentation tree.
+
 ## Documents
 
 | Document | Purpose |
 |---|---|
-| [index.md](index.md) | Contradiction index and identifiers |
-| [contradictions.md](contradictions.md) | Detailed contradiction records |
-| [resolutions.md](resolutions.md) | Resolution procedures and outcomes |
+| [index.md](index.md) | Current contradiction identifiers and status |
+| [contradictions.md](contradictions.md) | Current contradiction set and closure state |
+| [resolutions.md](resolutions.md) | Canonical resolutions that define the surviving tree |
