@@ -1,0 +1,17 @@
+{
+  "id": "first_steps",
+  "category_id": "starter",
+  "icon": "LEATHER_BOOTS",
+  "title": "First Steps",
+  "description": "Travel your opening block of progress.",
+  "amount": 1,
+  "criteria": {
+    "type": "movement",
+    "mode": "walk",
+    "count": 1,
+    "constraints": {}
+  },
+  "reward": {
+    "ap": 5
+  }
+}

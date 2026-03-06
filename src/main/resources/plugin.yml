@@ -1,0 +1,13 @@
+name: ${name}
+version: ${version}
+main: dev.pcrykh.PcrykhPlugin
+api-version: '1.21'
+description: Pcrykh runtime bootstrap
+commands:
+  pcrykh:
+    description: Opens the Pcrykh menu
+    permission: pcrykh.use
+permissions:
+  pcrykh.use:
+    description: Allows opening the Pcrykh menu
+    default: true

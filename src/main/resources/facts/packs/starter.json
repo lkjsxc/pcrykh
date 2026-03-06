@@ -1,0 +1,6 @@
+{
+  "facts": [
+    "Every runtime bootstrap now validates the 5.x config before enabling.",
+    "The default data pack includes one starter category, achievement, npc, and quest."
+  ]
+}

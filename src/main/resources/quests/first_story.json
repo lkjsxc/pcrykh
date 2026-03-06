@@ -1,0 +1,12 @@
+{
+  "id": "meet_the_guide",
+  "npc_id": "guide_villager",
+  "title": "Meet the Guide",
+  "stages": [
+    {
+      "stage_id": "accepted",
+      "kind": "talk",
+      "next_stage_id": null
+    }
+  ]
+}
