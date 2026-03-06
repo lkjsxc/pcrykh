@@ -48,6 +48,8 @@ public final class ConfigLoader {
         achievements.sort(Comparator
                 .comparingInt((AchievementDefinition achievement) -> categories.get(achievement.categoryId()).order())
                 .thenComparing(AchievementDefinition::id));
+        List<NpcDefinition> orderedNpcs = new ArrayList<>(npcs.values());
+        orderedNpcs.sort(Comparator.comparing(NpcDefinition::id));
         quests.sort(Comparator.comparing(QuestDefinition::id));
 
         return new LoadedRuntime(
@@ -56,6 +58,7 @@ public final class ConfigLoader {
                 facts,
                 orderedCategories,
                 achievements,
+            orderedNpcs,
                 quests
         );
     }
@@ -273,7 +276,35 @@ public final class ConfigLoader {
                     throw new ValidationException("quest_accept_node_id must point to an accept_quest node for " + id);
                 }
 
-                npcs.put(id, new NpcDefinition(id, displayName));
+                String profession = requireText(entry, file, "profession");
+                String world = requireText(entry, file, "world");
+                Position positionValue = new Position(
+                        requireDouble(position, file, "x"),
+                        requireDouble(position, file, "y"),
+                        requireDouble(position, file, "z")
+                );
+
+                Map<String, DialogueNodeDefinition> dialogueNodes = new HashMap<>();
+                nodes.fieldNames().forEachRemaining(nodeId -> {
+                    JsonNode nodeValue = nodes.get(nodeId);
+                    String type = nodeValue.path("type").asText();
+                    String text = nodeValue.path("text").asText("");
+                    String toNodeId = nodeValue.hasNonNull("to_node_id") ? nodeValue.get("to_node_id").asText() : null;
+                    boolean saveCheckpoint = nodeValue.path("save_checkpoint").asBoolean(false);
+                    int affinityDelta = nodeValue.path("affinity_delta").asInt(0);
+                    dialogueNodes.put(nodeId, new DialogueNodeDefinition(nodeId, type, text, toNodeId, saveCheckpoint, affinityDelta));
+                });
+
+                npcs.put(id, new NpcDefinition(
+                        id,
+                        displayName,
+                        profession,
+                        world,
+                        positionValue,
+                        graphId,
+                        questAcceptNodeId,
+                        new DialogueGraphDefinition(graphId, startNodeId, dialogueNodes)
+                ));
             }
         }
         return npcs;
@@ -430,6 +461,14 @@ public final class ConfigLoader {
         }
     }
 
+    private double requireDouble(JsonNode node, Path path, String field) throws ValidationException {
+        JsonNode value = node.get(field);
+        if (value == null || !value.isNumber()) {
+            throw new ValidationException("Missing numeric field " + field + " in " + path);
+        }
+        return value.asDouble();
+    }
+
     private List<JsonNode> toList(JsonNode array) {
         List<JsonNode> values = new ArrayList<>();
         array.forEach(values::add);
@@ -450,7 +489,25 @@ public final class ConfigLoader {
     public record AchievementDefinition(String id, String categoryId, String icon, String title, String description, int amount, int ap) {
     }
 
-    public record NpcDefinition(String id, String displayName) {
+        public record Position(double x, double y, double z) {
+        }
+
+        public record DialogueNodeDefinition(String id, String type, String text, String toNodeId, boolean saveCheckpoint, int affinityDelta) {
+        }
+
+        public record DialogueGraphDefinition(String id, String startNodeId, Map<String, DialogueNodeDefinition> nodes) {
+        }
+
+        public record NpcDefinition(
+            String id,
+            String displayName,
+            String profession,
+            String world,
+            Position position,
+            String dialogueGraphId,
+            String questAcceptNodeId,
+            DialogueGraphDefinition dialogueGraph
+        ) {
     }
 
     public record QuestDefinition(String id, String npcId, String title, int target) {
@@ -462,6 +519,7 @@ public final class ConfigLoader {
             List<String> facts,
             List<CategoryDefinition> categories,
             List<AchievementDefinition> achievements,
+            List<NpcDefinition> npcs,
             List<QuestDefinition> quests
     ) {
     }

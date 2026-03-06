@@ -55,6 +55,7 @@
     - `docs/spec/domain/npc/dialogue/README.md`
     - `docs/spec/domain/npc/dialogue/protocol.md`
     - `docs/spec/domain/npc/dialogue/state-machine.md`
+    - `docs/spec/domain/npc/dialogue/state-management.md`
     - `docs/spec/domain/npc/profile/README.md`
     - `docs/spec/domain/npc/profile/affinity.md`
     - `docs/spec/domain/npc/profile/model.md`

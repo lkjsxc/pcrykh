@@ -10,6 +10,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -65,6 +67,20 @@ public final class PcrykhListener implements Listener {
         this.bootstrap.openMenuFromBeacon(event.getPlayer());
     }
 
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onVillagerInteract(PlayerInteractEntityEvent event) {
+        if (this.bootstrap.handleVillagerInteract(event.getPlayer(), event.getRightClicked())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onVillagerInteractAt(PlayerInteractAtEntityEvent event) {
+        if (this.bootstrap.handleVillagerInteract(event.getPlayer(), event.getRightClicked())) {
+            event.setCancelled(true);
+        }
+    }
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInventoryClick(InventoryClickEvent event) {
         Inventory top = event.getView().getTopInventory();
@@ -82,6 +98,7 @@ public final class PcrykhListener implements Listener {
             event.setCancelled(true);
             if (event.getWhoClicked() instanceof Player player) {
                 scheduleBeacon(player);
+                this.bootstrap.handleBeaconInventoryClick(player);
             }
         }
     }
