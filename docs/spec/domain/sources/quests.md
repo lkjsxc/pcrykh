@@ -4,7 +4,7 @@
   - purpose:
     - define quest definitions used by villager story progression
   - source_binding:
-    - `quest_sources` in [../runtime/runtime-config.md](../runtime/runtime-config.md)
+    - `quest_sources` in [../../architecture/runtime-config.md](../../architecture/runtime-config.md)
   - resolution:
     - each entry is a path relative to the plugin data folder
     - directories are scanned recursively for `.json` files

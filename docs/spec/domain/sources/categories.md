@@ -4,7 +4,7 @@
   - purpose:
     - define category metadata in standalone JSON files
   - source_binding:
-    - `category_sources` in [../runtime/runtime-config.md](../runtime/runtime-config.md)
+    - `category_sources` in [../../architecture/runtime-config.md](../../architecture/runtime-config.md)
   - resolution:
     - each entry is a path relative to the plugin data folder
     - directories are scanned recursively for `.json` files
@@ -14,4 +14,4 @@
     - each file MUST remain under 300 lines
     - filenames SHOULD match the category `id`
   - schema:
-    - [domain/achievements/catalog/categories.md](../../domain/achievements/catalog/categories.md)
+    - [domain/achievements/catalog/categories.md](../achievements/catalog/categories.md)

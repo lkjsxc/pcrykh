@@ -4,7 +4,7 @@
   - purpose:
     - define achievement inputs used to build the runtime catalog
   - source_binding:
-    - `achievement_sources` in [../runtime/runtime-config.md](../runtime/runtime-config.md)
+    - `achievement_sources` in [../../architecture/runtime-config.md](../../architecture/runtime-config.md)
   - resolution:
     - each entry is a path relative to the plugin data folder
     - directories are scanned recursively for `.json` files
@@ -15,6 +15,6 @@
     - entries contain one achievement definition object
     - packs contain arrays of achievement definition objects
   - pack_format:
-    - each element MUST conform to [domain/achievements/catalog/model.md](../../domain/achievements/catalog/model.md)
+    - each element MUST conform to [domain/achievements/catalog/model.md](../achievements/catalog/model.md)
   - entry_format:
-    - the object MUST conform to [domain/achievements/catalog/model.md](../../domain/achievements/catalog/model.md)
+    - the object MUST conform to [domain/achievements/catalog/model.md](../achievements/catalog/model.md)

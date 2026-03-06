@@ -93,5 +93,5 @@
     - if the entry is a file, it is loaded directly
   - generated_achievements:
     - achievement sources provide either single achievement files or achievement packs
-    - single achievements must conform to [domain/achievements/catalog/model.md](../../domain/achievements/catalog/model.md)
+    - single achievements must conform to [domain/achievements/catalog/model.md](../domain/achievements/catalog/model.md)
     - packs are arrays of achievement objects conforming to the same model

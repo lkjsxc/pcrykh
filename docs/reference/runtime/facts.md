@@ -3,8 +3,8 @@
 - node: docs/reference/runtime/facts.md
   - source:
     - facts are loaded from `config.json` `facts_sources`
-    - the canonical fact list is defined in [domain/facts/README.md](../domain/facts/README.md)
-    - each source may be a file or directory; see [config/runtime/runtime-config.md](../config/runtime/runtime-config.md)
+    - the canonical fact list is defined in [domain/facts/README.md](../../spec/domain/facts/README.md)
+    - each source may be a file or directory; see [config/runtime/runtime-config.md](../../spec/architecture/runtime-config.md)
   - broadcast:
     - if `runtime.chat.facts_enabled` is true, broadcast random facts to global chat
     - interval is `runtime.chat.facts_interval_seconds`

@@ -4,7 +4,7 @@
   - purpose:
     - define fact pack inputs used for runtime chat facts
   - source_binding:
-    - `facts_sources` in [../runtime/runtime-config.md](../runtime/runtime-config.md)
+    - `facts_sources` in [../../architecture/runtime-config.md](../../architecture/runtime-config.md)
   - resolution:
     - each entry is a path relative to the plugin data folder
     - directories are scanned recursively for `.json` files

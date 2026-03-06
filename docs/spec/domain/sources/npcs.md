@@ -4,7 +4,7 @@
   - purpose:
     - define npc + dialogue graph inputs used by villager runtime
   - source_binding:
-    - `npc_sources` in [../runtime/runtime-config.md](../runtime/runtime-config.md)
+    - `npc_sources` in [../../architecture/runtime-config.md](../../architecture/runtime-config.md)
   - resolution:
     - each entry is a path relative to the plugin data folder
     - directories are scanned recursively for `.json` files
