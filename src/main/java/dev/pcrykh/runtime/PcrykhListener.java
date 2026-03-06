@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
@@ -79,6 +80,17 @@ public final class PcrykhListener implements Listener {
         if (this.bootstrap.handleVillagerInteract(event.getPlayer(), event.getRightClicked())) {
             event.setCancelled(true);
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onItemHeld(PlayerItemHeldEvent event) {
+        ItemStack nextItem = event.getPlayer().getInventory().getItem(event.getNewSlot());
+        if (!this.bootstrap.isManagedBeacon(nextItem)) {
+            return;
+        }
+        event.setCancelled(true);
+        scheduleBeacon(event.getPlayer());
+        this.bootstrap.openMenuFromBeacon(event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

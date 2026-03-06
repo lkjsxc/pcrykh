@@ -9,7 +9,9 @@
       - `Open the catalog`
   - behavior:
     - clicking the beacon opens the GUI menu defined in [menu.md](menu.md)
+    - selecting slot `8` by hotbar click, number-key swap, or scroll-wheel selection also counts as clicking the beacon
     - clicks are consumed; no normal item action occurs
+    - hotbar selection is restored after the menu opens; the beacon is not meant to become the active held item
     - attempting to drop/throw the beacon opens the GUI menu instead
   - permissions:
     - requires `pcrykh.use`
