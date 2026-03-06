@@ -16,3 +16,4 @@
     - clamp after every mutation
     - persistence is mandatory
     - affinity updates are atomic with dialogue/quest state savepoints
+    - once a delta is applied, any overflow beyond `[-100, 100]` is discarded by clamping; no rollover or retry behavior exists

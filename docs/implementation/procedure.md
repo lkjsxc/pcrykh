@@ -1,0 +1,44 @@
+# Implementation workflow
+
+- node: docs/implementation/procedure.md
+  - objective:
+    - implement only after the entire canonical docs tree has been read once in full
+    - maintain exact compliance with the current `/docs` tree
+    - end with Docker-based verification and a documented test result
+  - mandatory_sequence:
+    - step_01_read_pass:
+      - read every path in [read-order.md](read-order.md) in listed order without skipping entries
+      - do not begin design or coding before the read pass is complete
+      - record any contradiction or ambiguity immediately in `docs/reference/conflicts/` before changing affected specs
+    - step_02_requirement_extraction:
+      - derive runtime invariants, UI contracts, catalog schemas, persistence rules, and command behavior from the read pass
+      - write an implementation checklist grouped by subsystem: loader, lifecycle, ui, commands, persistence, villagers, quests, achievements
+      - reject any requirement that depends on deleted or out-of-repo content
+    - step_03_gap_resolution:
+      - if two canonical docs disagree, resolve the contradiction in the conflict ledger first
+      - if a rule is ambiguous but not contradictory, tighten the canonical spec before coding against it
+      - delete obsolete guidance rather than preserving migration notes
+    - step_04_design_mapping:
+      - map every planned class, listener, task, and data store to the relevant spec documents
+      - ensure every runtime behavior has at least one authoritative doc source
+      - keep public behavior aligned with docs even when internal structure changes
+    - step_05_implementation:
+      - build the loader and validation path first because invalid startup must fail fast
+      - implement lifecycle hooks next: default resources, state store, commands, listeners, schedulers
+      - implement UI screens and click handling only after their slot contracts are mapped from the UI docs
+      - implement persistence writes atomically and keep in-memory state coherent with on-disk state
+    - step_06_self_audit:
+      - compare the code against the full docs tree a second time using subsystem checklists
+      - verify that each spec file influenced either code, validation, or an explicit no-op rationale
+      - reject any behavior that is convenient in code but absent from the docs
+    - step_07_testing:
+      - execute the full matrix in [testing.md](testing.md)
+      - include Docker builder and Paper runtime smoke tests
+      - do not treat compile-only success as sufficient
+    - step_08_closeout:
+      - summarize implemented behavior, unresolved blockers, and exact test evidence
+      - create a non-interactive git commit after each completed phase boundary
+  - compliance_rules:
+    - the read pass is incomplete until every file in [read-order.md](read-order.md) has been opened once
+    - any new docs file added later MUST also be inserted into [read-order.md](read-order.md)
+    - implementation is non-compliant if it relies on undocumented assumptions that were not first codified in `/docs`

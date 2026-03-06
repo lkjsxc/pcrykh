@@ -14,5 +14,6 @@
   - permissions:
     - requires `pcrykh.use`
   - lifecycle:
-    - apply on join, respawn, and world change
+    - apply on plugin enable for online players, join, respawn, and world change
+    - world change includes teleports between worlds
     - re-apply after inventory resets

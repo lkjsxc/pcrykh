@@ -37,6 +37,8 @@
   - behavior:
     - toggles update in-memory runtime config
     - changes are persisted to `config.json` immediately
+    - persistence MUST write to a temporary file and atomically replace `config.json`
+    - if persistence fails, the in-memory toggle MUST roll back and the player MUST be informed in chat
     - clicking `Back` opens [menu.md](menu.md)
   - settings_binding:
     - `Achievement Broadcasts` -> `runtime.chat.announce_achievements`

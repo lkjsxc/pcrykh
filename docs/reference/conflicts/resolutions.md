@@ -99,3 +99,10 @@
 		- resolution:
 			- remove temporary external-path references from canonical docs
 			- keep contradiction evidence inside `docs/reference/conflicts/` only
+	- C-020 — Validation summary order vs loader validation order:
+		- conflict:
+			- the architecture validation summary stopped after runtime section checks
+			- the runtime loader sequence continued into source, catalog, npc, and quest validation
+		- resolution:
+			- define one canonical validation order shared by `validation.md` and `loader.md`
+			- require runtime section validation before source resolution and then continue through category, achievement, npc, and quest validation

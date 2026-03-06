@@ -20,6 +20,7 @@
     - primary: lower `remaining = target - current` is higher priority
     - secondary: higher `last_increment` is higher priority
     - tertiary: lexical ascending `achievement_id`
+    - quaternary: earlier enqueue timestamp wins when all other keys tie
   - preemption:
     - if `preempt_on_higher_priority` is true and a higher-priority entry arrives during cooldown, replace the pending display entry
   - anti_spam:

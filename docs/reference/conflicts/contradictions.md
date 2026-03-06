@@ -19,3 +19,4 @@
 		- `docs/spec/domain/npc/` mixed direct markdown files with a child directory despite the recursive tree rule requiring one child kind per directory
 		- change control required `change-records.md` while deprecations policy required immediate deletion of obsolete material and pruning of stale records
 		- contradiction summary referenced `/tmp/docs/reference/DRIFT_MATRIX.md` even though canonical authority must remain inside the repository tree
+		- validation summary omitted later loader stages and disagreed with the loader's canonical validation sequence

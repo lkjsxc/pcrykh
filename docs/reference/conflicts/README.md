@@ -7,7 +7,7 @@ Canonical contradiction authority for the current documentation tree.
 ## Current Status
 
 - Open canonical contradictions: `0`
-- Resolved canonical contradictions: `14`
+- Resolved canonical contradictions: `15`
 - External or temporary authority inputs retained: `0`
 
 ## Documents

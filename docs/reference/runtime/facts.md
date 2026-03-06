@@ -12,3 +12,5 @@
   - selection:
     - choose a random fact uniformly from the loaded list
     - consecutive repeats SHOULD be avoided when possible
+    - when more than one fact is loaded, the immediately previous fact MUST be excluded from the next selection
+    - when exactly one fact is loaded, repeating that fact is allowed

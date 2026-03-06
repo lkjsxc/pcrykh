@@ -11,10 +11,12 @@
     - managed villager NPCs are invulnerable
     - runtime MUST periodically recover missing/dead managed villagers
     - recovered villagers MUST spawn at a safe standing location near configured coordinates
+    - `near configured coordinates` means the first loaded location within a 2-block horizontal search radius and 3-block vertical search window that has a solid floor, two air blocks of headroom, and no liquid in the standing space
   - interruption:
     - if player does not interact for `runtime.dialogue.timeout_seconds`, conversation is interrupted
     - interrupted conversation MUST restore to the most recent saved dialogue node
     - affinity and dialogue state deltas after the last checkpoint MUST be discarded on interruption
+    - if a persisted `last_saved_node_id` no longer exists in the current dialogue graph, runtime MUST fall back to the graph `start_node_id` and clear the stale checkpoint
   - quest_acceptance:
     - quest is accepted only at `accept_quest` node type
     - acceptance binds quest state to `(player_uuid, npc_id)`

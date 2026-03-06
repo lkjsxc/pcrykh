@@ -6,6 +6,7 @@ Canonical documentation tree for LLM consumption.
 
 | Path | Role |
 |---|---|
+| [implementation/README.md](implementation/README.md) | End-to-end implementation and verification procedure |
 | [overview/README.md](overview/README.md) | Scope and versioning principles |
 | [policy/README.md](policy/README.md) | Governance and deprecation rules |
 | [spec/README.md](spec/README.md) | Domain and interface specifications |

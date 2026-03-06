@@ -14,3 +14,7 @@
 		- clicking `Previous` opens `page - 1`
 		- clicking `Next` opens `page + 1`
 		- clicking `Back` opens [menu.md](menu.md)
+	- single_page_behavior:
+		- on one-page views, slots `47` and `53` remain empty
+		- slot `49` still renders page metadata as `1/1`
+		- profile and settings reuse slot `45` for `Back` and leave slots `47`, `49`, and `53` empty unless explicitly stated otherwise

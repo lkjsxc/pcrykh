@@ -9,3 +9,4 @@
   - rules:
     - rewards are granted exactly once per quest completion
     - duplicate completion attempts MUST be idempotent
+    - once completion state is persisted, later accept or complete attempts for the same quest MUST not grant additional rewards

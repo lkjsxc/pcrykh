@@ -22,6 +22,7 @@
     - `swim` matches player swimming movement in water while not riding a vehicle
     - `ethereal_wing` matches gliding with elytra equipped
     - mode selection order is `boat` -> `ethereal_wing` -> `swim` -> `jump` -> `sneak` -> `sprint` -> `walk`
+    - for each sampled movement delta, the runtime MUST apply progress to the first matching mode in that priority order and MUST NOT double-count the same delta into lower-priority modes
   - ordering:
     - achievements are ordered by category order, then ascending `id`
     - category order is defined in [domain/achievements/catalog/categories.md](../../spec/domain/achievements/catalog/categories.md)

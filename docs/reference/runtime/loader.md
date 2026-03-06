@@ -18,6 +18,7 @@
     - JSON parse
     - required keys and `commands.root`
     - `spec_version` validation
+    - runtime `autosave`, `chat`, `action_bar.priority`, `dialogue`, and `persistence` validation
     - source resolution for categories, achievements, facts, npcs, quests
     - category and achievement validation
     - npc and dialogue validation
@@ -25,3 +26,4 @@
   - failure_behavior:
     - any validation failure disables the plugin
     - duplicate ids are fatal
+    - duplicate ids are scoped per catalog type; identical literals may exist across different catalog types

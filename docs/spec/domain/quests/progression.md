@@ -13,3 +13,5 @@
     - `accept_quest` transition sets `quest.accepted=true` and `quest.stage=accepted`
     - stage and counter updates MUST be persisted at autosave and quit
     - completion emits reward payload and optional affinity reward
+    - GUI `target` is derived from the active stage: use `stage.target` for counted stages and implicit target `1` for `talk` or `custom` stages
+    - GUI `progress` for non-counted stages is `0` before completion and `1` after completion

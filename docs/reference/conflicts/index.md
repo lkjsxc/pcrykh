@@ -16,3 +16,4 @@
 		- C-017 — NPC root mixed file-and-directory children vs recursive tree rule
 		- C-018 — Change-record mandate vs immediate obsolete-content deletion policy
 		- C-019 — Temporary drift path reference vs canonical in-repo authority requirement
+		- C-020 — Validation summary order vs loader validation order

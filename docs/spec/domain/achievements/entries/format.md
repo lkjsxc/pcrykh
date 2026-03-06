@@ -24,4 +24,6 @@
       - `reward` MUST conform to reward rules
   - progression:
     - general action achievements MUST be declared in five levels: I, II, III, IV, V
+    - `general action achievements` are repeatable progress families for criteria types `block_break`, `item_craft`, `entity_kill`, `fish_catch`, `item_enchant`, and `movement`
+    - one-shot, dialogue-driven, or quest-gated achievements are exempt from the five-level requirement
     - each subsequent level MUST require approximately 1.8x the previous `amount`

@@ -7,3 +7,4 @@
 		- `constraints` MUST exist in every criteria object, even if empty
 		- `constraints` MUST be a JSON object
 		- the runtime MUST NOT interpret or validate constraint keys
+		- omitting `constraints` is a validation failure

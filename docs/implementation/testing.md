@@ -1,0 +1,45 @@
+# Testing procedure
+
+- node: docs/implementation/testing.md
+  - goal:
+    - prove that implementation behavior matches the canonical docs and survives Docker-based execution
+  - gates:
+    - gate_01_static_audit:
+      - re-run the full documentation read pass if specs changed during implementation
+      - verify every docs directory still satisfies the recursive README rule
+      - verify every markdown file remains under 300 lines
+    - gate_02_source_validation:
+      - run compiler or language-server validation on edited source files
+      - confirm resource files required for startup exist and are packaged
+      - confirm config defaults match `docs/spec/architecture/runtime-config.md`
+    - gate_03_loader_validation:
+      - test valid startup config
+      - test missing required key failure
+      - test unsupported `spec_version` failure
+      - test duplicate ids inside each catalog type
+      - test missing source path failure
+    - gate_04_ui_validation:
+      - verify all inventories open at 54 slots
+      - verify all GUI clicks are cancelled and do not move items
+      - verify hotbar beacon sits in slot `8`
+      - verify using or dropping the beacon opens the main menu
+      - verify menu buttons open profile, achievements, quests, and settings
+      - verify `Back`, `Previous`, `Next`, and page indicator slots match `navigation.md`
+    - gate_05_runtime_validation:
+      - verify scheduled facts respect `facts_enabled`
+      - verify settings toggles update runtime state and persist atomically to `config.json`
+      - verify persistence directories are created and reused across restarts
+    - gate_06_docker_validation:
+      - run `docker compose run --rm builder`
+      - confirm `data/plugins/pcrykh.jar` is produced
+      - run `docker compose up paper`
+      - confirm Paper initializes the plugin and the plugin enables without loader failure
+      - stop the stack with `docker compose down`
+    - gate_07_regression_audit:
+      - inspect `git status --short`
+      - ensure no unintended generated files remain
+      - compare runtime logs against expected behavior and document blockers explicitly
+  - evidence:
+    - record the exact commands executed
+    - record whether each gate passed, failed, or is blocked
+    - blocked gates MUST name the concrete blocker instead of using a generic failure label
