@@ -1,6 +1,6 @@
 # GUI hotbar beacon
 
-- node: docs/gui/hotbar.md
+- node: docs/spec/ui/hotbar.md
   - item:
     - slot: 8 (far right of the hotbar)
     - material: `BEACON`

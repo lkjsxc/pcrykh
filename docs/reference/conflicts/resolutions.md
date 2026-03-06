@@ -1,6 +1,6 @@
 # Conflict resolutions
 
-- node: docs/governance/conflicts/resolutions.md
+- node: docs/reference/conflicts/resolutions.md
 	- C-006 — Achievement id field name:
 		- conflict:
 			- some data specs referenced `achievement_id`

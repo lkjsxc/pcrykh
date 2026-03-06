@@ -1,6 +1,6 @@
 # Conflict index
 
-- node: docs/governance/conflicts/index.md
+- node: docs/reference/conflicts/index.md
 	- resolved_conflicts:
 		- C-006 — Achievement id field name
 		- C-007 — Criteria type list vs config usage

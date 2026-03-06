@@ -1,6 +1,6 @@
 # Commands
 
-- node: docs/runtime/commands.md
+- node: docs/reference/runtime/commands.md
 	- command:
 		- name: `/pcrykh`
 		- permission: `pcrykh.use`

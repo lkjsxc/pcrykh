@@ -1,6 +1,6 @@
 # Villager runtime
 
-- node: docs/runtime/villagers.md
+- node: docs/reference/runtime/villagers.md
   - interaction:
     - talking to an unemployed villager bound to an npc definition starts dialogue flow
     - while dialogue is active, right-click advances transitions

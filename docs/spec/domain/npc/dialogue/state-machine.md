@@ -1,6 +1,6 @@
 # Dialogue state machine
 
-- node: docs/domain/npc/dialogue/state-machine.md
+- node: docs/spec/domain/npc/dialogue/state-machine.md
   - graph:
     - directed graph keyed by `node_id`
     - one `start_node_id` per graph

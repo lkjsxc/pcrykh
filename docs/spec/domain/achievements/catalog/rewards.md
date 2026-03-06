@@ -1,6 +1,6 @@
 # Rewards
 
-- node: docs/domain/achievements/catalog/rewards.md
+- node: docs/spec/domain/achievements/catalog/rewards.md
   - reward_definition:
     - schema:
       ```json

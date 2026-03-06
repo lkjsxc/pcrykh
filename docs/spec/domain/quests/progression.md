@@ -1,6 +1,6 @@
 # Quest progression
 
-- node: docs/domain/quests/progression.md
+- node: docs/spec/domain/quests/progression.md
   - per_player_fields:
     - `quest.accepted`: boolean
     - `quest.completed`: boolean

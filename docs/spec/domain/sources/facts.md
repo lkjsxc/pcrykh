@@ -1,6 +1,6 @@
 # Fact sources
 
-- node: docs/config/sources/facts.md
+- node: docs/spec/domain/sources/facts.md
   - purpose:
     - define fact pack inputs used for runtime chat facts
   - source_binding:

@@ -1,6 +1,6 @@
 # Achievement runtime
 
-- node: docs/runtime/achievements.md
+- node: docs/reference/runtime/achievements.md
   - unlock_events:
     - when an achievement transitions to completed, it becomes unlocked
     - unlocks are tracked in-memory for the current session

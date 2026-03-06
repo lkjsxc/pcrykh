@@ -1,6 +1,6 @@
 # Runtime config validation
 
-- node: docs/config/runtime/validation.md
+- node: docs/spec/architecture/validation.md
   - order:
     - file existence and line-count limit
     - JSON parse

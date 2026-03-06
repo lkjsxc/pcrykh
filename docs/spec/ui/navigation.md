@@ -1,6 +1,6 @@
 # GUI navigation
 
-- node: docs/gui/navigation.md
+- node: docs/spec/ui/navigation.md
 	- pagination:
 		- page_size: 45 achievements
 		- page_index: zero-based

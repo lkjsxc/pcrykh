@@ -1,6 +1,6 @@
 # Contradictions
 
-- node: docs/governance/conflicts/contradictions.md
+- node: docs/reference/conflicts/contradictions.md
 	- status:
 		- no open contradictions remain
 	- resolved_contradictions:

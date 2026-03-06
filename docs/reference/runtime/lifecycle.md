@@ -1,6 +1,6 @@
 # Lifecycle
 
-- node: docs/runtime/lifecycle.md
+- node: docs/reference/runtime/lifecycle.md
 	- startup_sequence:
 		- ensure default config resources exist in the data folder
 		- load `config.json` and validate required fields

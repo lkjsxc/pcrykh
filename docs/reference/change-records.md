@@ -1,6 +1,6 @@
 # Change records
 
-- node: docs/governance/changes/change-records.md
+- node: docs/reference/change-records.md
   - purpose:
     - record current-spec changes for LLM ingestion
     - records describe what is now true, not historical compatibility

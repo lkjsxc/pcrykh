@@ -1,6 +1,6 @@
 # Main menu
 
-- node: docs/gui/menu.md
+- node: docs/spec/ui/menu.md
   - purpose:
     - provide the primary navigation hub for the plugin UI
   - atmosphere:

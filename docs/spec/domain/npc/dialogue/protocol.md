@@ -1,6 +1,6 @@
 # Dialogue protocol
 
-- node: docs/domain/npc/dialogue/protocol.md
+- node: docs/spec/domain/npc/dialogue/protocol.md
   - start:
     - trigger: right-click unemployed villager bound to an npc definition
     - action: open conversation at `last_saved_node_id` or graph `start_node_id`

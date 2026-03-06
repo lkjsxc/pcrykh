@@ -1,6 +1,6 @@
 # Achievement categories
 
-- node: docs/domain/achievements/catalog/categories.md
+- node: docs/spec/domain/achievements/catalog/categories.md
   - category_definition:
     - schema:
       ```json

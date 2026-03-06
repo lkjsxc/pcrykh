@@ -1,6 +1,6 @@
 # Quest model
 
-- node: docs/domain/quests/model.md
+- node: docs/spec/domain/quests/model.md
   - object: quest_definition
   - required_fields:
     - `id`: lowercase snake_case unique id

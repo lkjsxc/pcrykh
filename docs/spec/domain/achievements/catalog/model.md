@@ -1,6 +1,6 @@
 # Achievement model
 
-- node: docs/domain/achievements/catalog/model.md
+- node: docs/spec/domain/achievements/catalog/model.md
   - achievement_definition:
     - schema:
       ```json

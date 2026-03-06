@@ -1,6 +1,6 @@
 # Category sources
 
-- node: docs/config/sources/categories.md
+- node: docs/spec/domain/sources/categories.md
   - purpose:
     - define category metadata in standalone JSON files
   - source_binding:

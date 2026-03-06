@@ -1,6 +1,6 @@
 # Achievement entry format
 
-- node: docs/domain/achievements/entries/format.md
+- node: docs/spec/domain/achievements/entries/format.md
   - entry_file:
     - schema:
       ```json

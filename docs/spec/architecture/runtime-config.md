@@ -1,6 +1,6 @@
 # Runtime config
 
-- node: docs/config/runtime/runtime-config.md
+- node: docs/spec/architecture/runtime-config.md
   - file:
     - name: `config.json`
     - max_lines: 300

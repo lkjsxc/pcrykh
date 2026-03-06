@@ -1,6 +1,6 @@
 # Quest sources
 
-- node: docs/config/sources/quests.md
+- node: docs/spec/domain/sources/quests.md
   - purpose:
     - define quest definitions used by villager story progression
   - source_binding:

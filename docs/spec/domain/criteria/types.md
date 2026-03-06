@@ -1,6 +1,6 @@
 # Criteria types
 
-- node: docs/domain/criteria/types.md
+- node: docs/spec/domain/criteria/types.md
   - common_fields:
     - `type` (string, required)
     - `count` (integer, required, `>= 1`)

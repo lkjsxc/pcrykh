@@ -1,6 +1,6 @@
 # Achievement sources
 
-- node: docs/config/sources/achievements.md
+- node: docs/spec/domain/sources/achievements.md
   - purpose:
     - define achievement inputs used to build the runtime catalog
   - source_binding:

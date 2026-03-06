@@ -1,6 +1,6 @@
 # Change control
 
-- node: docs/governance/changes/change-control.md
+- node: docs/policy/change-control.md
 	- rules:
 		- changes MUST update both docs and source code
 		- documentation updates MUST be committed before source code updates

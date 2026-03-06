@@ -1,6 +1,6 @@
 # Versioning
 
-- node: docs/foundation/versioning.md
+- node: docs/overview/principles/versioning.md
   - rules:
     - backward compatibility is ignored
     - `spec_version` is required in runtime config

@@ -1,6 +1,6 @@
 # NPC affinity
 
-- node: docs/domain/npc/affinity.md
+- node: docs/spec/domain/npc/affinity.md
   - per_player_state:
     - tracked per `(player_uuid, npc_id)`
   - fields:

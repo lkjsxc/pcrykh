@@ -1,6 +1,6 @@
 # Achievements page
 
-- node: docs/gui/achievements.md
+- node: docs/spec/ui/achievements.md
   - purpose:
     - provide a paged catalog view of all achievements
   - inventory:

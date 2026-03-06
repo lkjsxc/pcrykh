@@ -1,6 +1,6 @@
 # Quests page
 
-- node: docs/gui/quests.md
+- node: docs/spec/ui/quests.md
   - purpose:
     - provide a paged view of accepted and completed quests
   - inventory:

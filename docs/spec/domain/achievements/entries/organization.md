@@ -1,6 +1,6 @@
 # Achievement entry organization
 
-- node: docs/domain/achievements/entries/organization.md
+- node: docs/spec/domain/achievements/entries/organization.md
   - directory_layout:
     - organize entries by category_id as directories under `achievements/entries/`
     - each JSON file contains exactly one achievement definition

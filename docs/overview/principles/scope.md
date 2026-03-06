@@ -1,6 +1,6 @@
 # Scope
 
-- node: docs/foundation/scope.md
+- node: docs/overview/principles/scope.md
   - in_scope:
     - runtime JSON config loading
     - command surface tied to the achievement catalog

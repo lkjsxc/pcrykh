@@ -1,6 +1,6 @@
 # NPC model
 
-- node: docs/domain/npc/model.md
+- node: docs/spec/domain/npc/model.md
   - object: npc_definition
   - required_fields:
     - `id`: lowercase snake_case unique id

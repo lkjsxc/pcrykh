@@ -1,6 +1,6 @@
 # Random facts
 
-- node: docs/runtime/facts.md
+- node: docs/reference/runtime/facts.md
   - source:
     - facts are loaded from `config.json` `facts_sources`
     - the canonical fact list is defined in [domain/facts/README.md](../domain/facts/README.md)

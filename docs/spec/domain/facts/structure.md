@@ -1,6 +1,6 @@
 # Facts catalog structure
 
-- node: docs/domain/facts/structure.md
+- node: docs/spec/domain/facts/structure.md
   - grouping:
     - facts are grouped into packs for scalability
     - packs SHOULD be organized by theme or range

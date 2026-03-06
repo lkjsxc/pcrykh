@@ -1,6 +1,6 @@
 # Quest rewards
 
-- node: docs/domain/quests/rewards.md
+- node: docs/spec/domain/quests/rewards.md
   - reward_types:
     - `ap`: integer
     - `items`: array of `{material, amount}`

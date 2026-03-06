@@ -1,6 +1,6 @@
 # Profile page
 
-- node: docs/gui/profile.md
+- node: docs/spec/ui/profile.md
   - purpose:
     - provide the player's achievement summary and identity badge
   - inventory:

@@ -1,6 +1,6 @@
 # Config loader
 
-- node: docs/runtime/loader.md
+- node: docs/reference/runtime/loader.md
   - responsibilities:
     - enforce the 300-line limit on `config.json`
     - reject unsupported `spec_version`

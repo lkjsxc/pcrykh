@@ -1,6 +1,6 @@
 # Settings page
 
-- node: docs/gui/settings.md
+- node: docs/spec/ui/settings.md
   - purpose:
     - configure notification and broadcast options
   - inventory:

@@ -1,6 +1,6 @@
 # NPC sources
 
-- node: docs/config/sources/npcs.md
+- node: docs/spec/domain/sources/npcs.md
   - purpose:
     - define npc + dialogue graph inputs used by villager runtime
   - source_binding:

@@ -1,6 +1,6 @@
 # Constraints
 
-- node: docs/domain/criteria/constraints.md
+- node: docs/spec/domain/criteria/constraints.md
 	- definition:
 		- constraints are opaque objects passed through without validation
 	- rules:

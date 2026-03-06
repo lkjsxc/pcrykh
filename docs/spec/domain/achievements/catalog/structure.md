@@ -1,6 +1,6 @@
 # Achievement catalog structure
 
-- node: docs/domain/achievements/catalog/structure.md
+- node: docs/spec/domain/achievements/catalog/structure.md
   - grouping:
     - achievements are grouped by `category_id`
     - categories are ordered by `categories.order`

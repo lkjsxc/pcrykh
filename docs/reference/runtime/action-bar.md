@@ -1,6 +1,6 @@
 # Action bar progress
 
-- node: docs/runtime/action-bar.md
+- node: docs/reference/runtime/action-bar.md
   - purpose:
     - notify players whenever progress increases for one or more achievements
   - config_binding:
