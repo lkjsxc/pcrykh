@@ -1,14 +1,12 @@
-# pcrykh specification tree
+# Documentation Root
 
-- node: docs/
-	- canonical_index: true
-	- rules:
-		- only paths listed below are normative
-		- every directory contains a README.md index and tree-structured children
-	- children:
-		- [foundation/README.md](foundation/README.md)
-		- [domain/README.md](domain/README.md)
-		- [config/README.md](config/README.md)
-		- [gui/README.md](gui/README.md)
-		- [runtime/README.md](runtime/README.md)
-		- [governance/README.md](governance/README.md)
+Canonical documentation tree for LLM consumption.
+
+## Directories
+
+| Path | Role |
+|---|---|
+| [overview/README.md](overview/README.md) | Scope and versioning principles |
+| [policy/README.md](policy/README.md) | Governance and deprecation rules |
+| [spec/README.md](spec/README.md) | Domain and interface specifications |
+| [reference/README.md](reference/README.md) | Runtime behavior and contradiction ledgers |
